@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
@@ -24,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.onlinecourses.R
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
 @Composable
@@ -134,8 +137,9 @@ fun Registration(){
                     trailingIcon = {
                         IconButton(onClick = { datePickerDialog.show() }) {
                             Icon(
-                                imageVector = androidx.compose.material.icons.Icons.Default.DateRange,
-                                contentDescription = "Выбрать дату"
+                                painter = painterResource(id = R.drawable.calendar),
+                                contentDescription = "Выберите дату",
+                                modifier = Modifier.size(25.dp)
                             )
                         }
                     }
