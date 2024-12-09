@@ -87,7 +87,7 @@ fun AddAppeal(){
             )
             Button(
                 onClick = {
-                    // Обработка создания обращения
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
