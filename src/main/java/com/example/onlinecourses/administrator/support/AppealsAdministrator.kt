@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -25,7 +24,7 @@ import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun Appeal() {
+fun AppealsAdministrator() {
     val appealTopic = remember { "Техническая ошибка" }
     val appealStatus = remember { "В обработке" }
     val appealText = remember { "Не удается войти в приложение. Появляется ошибка 403." }

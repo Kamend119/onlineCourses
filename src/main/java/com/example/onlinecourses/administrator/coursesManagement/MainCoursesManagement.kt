@@ -1,4 +1,4 @@
-package com.example.onlinecourses.courseOwner
+package com.example.onlinecourses.administrator.coursesManagement
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,11 +11,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.onlinecourses.AppBarCourseOwner
-import com.example.onlinecourses.R
+import com.example.onlinecourses.AppBarAdministrator
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 import kotlinx.coroutines.launch
 
@@ -23,12 +21,12 @@ data class Course(val title: String, val author: String, val description: String
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun MyCoursesPreview() {
-    MyCourses()
+fun MainCoursesManagementPreview() {
+    MainCoursesManagement()
 }
 
 @Composable
-fun MyCourses() {
+fun MainCoursesManagement() {
     // Данные курсов
     val courseList = listOf(
         Course("Курс 1", "Автор 1", "Описание курса 1", "Программирование"),
@@ -50,7 +48,7 @@ fun MyCourses() {
     }
 
     OnlineCursesTheme {
-        AppBarCourseOwner(title = "Мои курсы", showTopBar = true, showBottomBar = true) {
+        AppBarAdministrator(title = "Управление курсами", showTopBar = true, showBottomBar = true) {
             ModalNavigationDrawer(
                 drawerState = drawerState,
                 drawerContent = {
@@ -207,21 +205,6 @@ fun MyCourses() {
                                 }
                             }
                         }
-                    }
-
-                    // Плавающая кнопка
-                    FloatingActionButton(
-                        onClick = { /* Добавление нового курса */ },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.add),
-                            contentDescription = "Добавить",
-                            modifier = Modifier.size(35.dp)
-                        )
                     }
                 }
             }
