@@ -50,7 +50,6 @@ fun MainUserManagement() {
     OnlineCursesTheme {
         AppBarAdministrator("Управление пользователями", showTopBar = true, showBottomBar = true) {
             Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                // Поле поиска
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
