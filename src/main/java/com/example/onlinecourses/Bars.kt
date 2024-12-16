@@ -84,7 +84,7 @@ fun AppBarStudent(
                 if (showBottomBar) {
                     Box(
                         modifier = Modifier
-                            .padding(bottom = 75.dp, start = 16.dp, end = 16.dp)
+                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
                             .fillMaxWidth()
                     ) {
                         androidx.compose.material3.Surface(
@@ -191,7 +191,7 @@ fun AppBarCourseOwner(
                 if (showBottomBar) {
                     Box(
                         modifier = Modifier
-                            .padding(bottom = 75.dp, start = 16.dp, end = 16.dp)
+                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
                             .fillMaxWidth()
                     ) {
                         androidx.compose.material3.Surface(
@@ -298,7 +298,7 @@ fun AppBarAdministrator(
                 if (showBottomBar) {
                     Box(
                         modifier = Modifier
-                            .padding(bottom = 75.dp, start = 16.dp, end = 16.dp)
+                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
                             .fillMaxWidth()
                     ) {
                         androidx.compose.material3.Surface(

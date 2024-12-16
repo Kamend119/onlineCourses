@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.example.onlinecourses.AppBarCourseOwner
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
-@Composable
 @Preview(showBackground = true, showSystemUi = true)
+@Composable
 fun MainCheckingPreview() {
     MainChecking()
 }
