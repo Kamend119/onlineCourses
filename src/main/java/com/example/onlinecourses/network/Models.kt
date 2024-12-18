@@ -2,11 +2,6 @@ package com.example.onlinecourses.network
 
 import com.google.gson.annotations.SerializedName
 
-data class UserCredentials(
-    val login: String,
-    val password: String
-)
-
 data class User(
     val email: String,
     val login: String,
@@ -169,7 +164,8 @@ data class NewUser(
 )
 
 data class LoginResponse(
-    @SerializedName("user_id") val userId: Int
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("role_name") val roleName: String
 )
 
 data class RegistrationResponse(

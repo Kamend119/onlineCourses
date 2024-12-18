@@ -1,11 +1,18 @@
 package com.example.onlinecourses.network
 
-import retrofit2.http.*
 import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
+
     @GET("login")
-    suspend fun login(@Body credentials: UserCredentials): Response<LoginResponse>
+    suspend fun login(
+        @Query("login_") login_: String,
+        @Query("password") password: String
+    ): Response<LoginResponse>
 
     @POST("registration")
     suspend fun registration(@Body user: User): Response<RegistrationResponse>

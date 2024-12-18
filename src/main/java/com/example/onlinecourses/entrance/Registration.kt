@@ -2,21 +2,26 @@ package com.example.onlinecourses.entrance
 
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,136 +29,234 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.material3.*
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.onlinecourses.R
+import com.example.onlinecourses.network.RegistrationViewModel
+import com.example.onlinecourses.network.User
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.regex.Pattern
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun Registration(){
+fun Registration(
+    navController: NavHostController
+) {
+    val viewModel: RegistrationViewModel = viewModel()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var role by remember { mutableStateOf("") }
-    var isDropdownExpanded by remember { mutableStateOf(false) }
-    val roles = listOf("Студент", "Преподаватель", "Администратор")
-
     var dateBirthday by remember { mutableStateOf("") }
+    var isDropdownExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
-
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val datePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            dateBirthday = "$dayOfMonth/${month + 1}/$year"
+            val selectedDate = Calendar.getInstance().apply {
+                set(year, month, dayOfMonth)
+            }.time
+            dateBirthday = dateFormat.format(selectedDate)
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH)
     )
 
+    val roles = viewModel.roles
+    val isLoading = viewModel.isLoading
+
+    LaunchedEffect(Unit) {
+        viewModel.loadRoles()
+    }
+
     OnlineCursesTheme {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(75.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text("Регистрация", style = MaterialTheme.typography.titleMedium)
+            item {
+                Text("Регистрация", style = MaterialTheme.typography.titleMedium)
 
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Почта", style = MaterialTheme.typography.bodyMedium) }
-                )
-
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Пароль", style = MaterialTheme.typography.bodyMedium) }
-                )
-
-                OutlinedTextField(
-                    value = repeatPassword,
-                    onValueChange = { repeatPassword = it },
-                    label = { Text("Повторите пароль", style = MaterialTheme.typography.bodyMedium) }
-                )
-
-                OutlinedTextField(
-                    value = firstName,
-                    onValueChange = { firstName = it },
-                    label = { Text("Имя", style = MaterialTheme.typography.bodyMedium) }
-                )
-                OutlinedTextField(
-                    value = lastName,
-                    onValueChange = { lastName = it },
-                    label = { Text("Фамилия", style = MaterialTheme.typography.bodyMedium) }
-                )
-
-                @OptIn(ExperimentalMaterial3Api::class)
-                ExposedDropdownMenuBox(
-                    expanded = isDropdownExpanded,
-                    onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
-                ) {
-                    OutlinedTextField(
-                        value = role,
-                        onValueChange = { role = it },
-                        label = { Text("Роль", style = MaterialTheme.typography.bodyMedium) },
-                        readOnly = true,
-                        modifier = Modifier.menuAnchor()
-                    )
-                    ExposedDropdownMenu(
-                        expanded = isDropdownExpanded,
-                        onDismissRequest = { isDropdownExpanded = false }
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        roles.forEach { selectedRole ->
-                            DropdownMenuItem(
-                                text = { Text(selectedRole, style = MaterialTheme.typography.bodyMedium) },
-                                onClick = {
-                                    role = selectedRole
-                                    isDropdownExpanded = false
+                        OutlinedTextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            label = { Text("Почта", style = MaterialTheme.typography.bodyMedium) }
+                        )
+
+                        OutlinedTextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = { Text("Пароль", style = MaterialTheme.typography.bodyMedium) }
+                        )
+
+                        OutlinedTextField(
+                            value = repeatPassword,
+                            onValueChange = { repeatPassword = it },
+                            label = { Text("Повторите пароль", style = MaterialTheme.typography.bodyMedium) }
+                        )
+
+                        OutlinedTextField(
+                            value = firstName,
+                            onValueChange = { firstName = it },
+                            label = { Text("Имя", style = MaterialTheme.typography.bodyMedium) }
+                        )
+                        OutlinedTextField(
+                            value = lastName,
+                            onValueChange = { lastName = it },
+                            label = { Text("Фамилия", style = MaterialTheme.typography.bodyMedium) }
+                        )
+
+                        @OptIn(ExperimentalMaterial3Api::class)
+                        ExposedDropdownMenuBox(
+                            expanded = isDropdownExpanded,
+                            onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
+                        ) {
+                            OutlinedTextField(
+                                value = role,
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Роль") },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        expanded = isDropdownExpanded
+                                    )
+                                },
+                                modifier = Modifier.menuAnchor()
+                            )
+                            ExposedDropdownMenu(
+                                expanded = isDropdownExpanded,
+                                onDismissRequest = { isDropdownExpanded = false }
+                            ) {
+                                roles.forEach { selectedRole ->
+                                    DropdownMenuItem(
+                                        text = { Text(selectedRole.nameRole) },
+                                        onClick = {
+                                            role = selectedRole.nameRole
+                                            isDropdownExpanded = false
+                                        }
+                                    )
                                 }
-                            )
+                            }
                         }
-                    }
-                }
 
-                OutlinedTextField(
-                    value = dateBirthday,
-                    onValueChange = {},
-                    label = { Text("Дата рождения", style = MaterialTheme.typography.bodyMedium) },
-                    readOnly = true,
-                    trailingIcon = {
-                        IconButton(onClick = { datePickerDialog.show() }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.calendar),
-                                contentDescription = "Выберите дату",
-                                modifier = Modifier.size(25.dp)
-                            )
+                        OutlinedTextField(
+                            value = dateBirthday,
+                            onValueChange = {},
+                            label = { Text("Дата рождения", style = MaterialTheme.typography.bodyMedium) },
+                            readOnly = true,
+                            trailingIcon = {
+                                IconButton(onClick = { datePickerDialog.show() }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.calendar),
+                                        contentDescription = "Выберите дату",
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                            }
+                        )
+
+                        Button(
+                            onClick = {
+                                if (email.isBlank() || password.isBlank() || repeatPassword.isBlank() || firstName.isBlank() || lastName.isBlank() || role.isBlank() || dateBirthday.isBlank()) {
+                                    Toast.makeText(context, "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+
+                                if (!isEmailValid(email)) {
+                                    Toast.makeText(context, "Введите корректную почту", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+
+                                if (!isPasswordValid(password)) {
+                                    Toast.makeText(
+                                        context,
+                                        "Пароль должен содержать не менее 8 символов, включая строчные и заглавные буквы, а также хотя бы одну цифру",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    return@Button
+                                }
+
+                                if (password != repeatPassword) {
+                                    Toast.makeText(context, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+
+                                if (!isValidAge(dateBirthday)) {
+                                    Toast.makeText(context, "Вам должно быть не менее 14 лет", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+
+                                val selectedRoleId = roles.find { it.nameRole == role }?.roleId ?: -1
+
+                                val user = User(
+                                    email = email,
+                                    login = email,
+                                    password = password,
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    roleId = selectedRoleId,
+                                    gender = "Не указано",
+                                    dataBirth = dateBirthday
+                                )
+                                viewModel.registerUser(user) {
+                                    navController.navigate("entrance")
+                                }
+                            },
+                            modifier = Modifier.padding(top = 20.dp)
+                        ) {
+                            Text("Зарегистрироваться", style = MaterialTheme.typography.labelMedium)
                         }
+
                     }
-                )
-
-                Button(
-                    onClick = {
-
-                    },
-                    modifier = Modifier.padding(top = 20.dp)
-                ) {
-                    Text("Зарегистрироваться", style = MaterialTheme.typography.labelMedium)
                 }
             }
         }
     }
+}
+
+fun isEmailValid(email: String): Boolean {
+    val emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+    return Pattern.matches(emailPattern, email)
+}
+
+fun isValidAge(dateBirthday: String): Boolean {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val birthDate = dateFormat.parse(dateBirthday) ?: return false
+
+    val currentDate = Calendar.getInstance().time
+    val currentCalendar = Calendar.getInstance().apply { time = currentDate }
+    val birthCalendar = Calendar.getInstance().apply { time = birthDate }
+
+    val age = currentCalendar.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+
+    if (currentCalendar.get(Calendar.MONTH) < birthCalendar.get(Calendar.MONTH) ||
+        (currentCalendar.get(Calendar.MONTH) == birthCalendar.get(Calendar.MONTH) &&
+                currentCalendar.get(Calendar.DAY_OF_MONTH) < birthCalendar.get(Calendar.DAY_OF_MONTH))) {
+        return age >= 14
+    }
+
+    return age >= 14
+}
+
+fun isPasswordValid(password: String): Boolean {
+    val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$"
+    return Pattern.matches(passwordPattern, password)
 }

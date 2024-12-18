@@ -10,13 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun Entrance(){
+fun Entrance(navController: NavHostController){
     OnlineCursesTheme {
         Column(
             modifier = Modifier
@@ -34,7 +33,7 @@ fun Entrance(){
             ) {
                 Button(
                     onClick = {
-
+                        navController.navigate("authorization")
                     }
                 ) {
                     Text("Авторизация", style = MaterialTheme.typography.labelMedium)
@@ -42,7 +41,7 @@ fun Entrance(){
 
                 Button(
                     onClick = {
-
+                        navController.navigate("registration")
                     }
                 ) {
                     Text("Регистрация", style = MaterialTheme.typography.labelMedium)
