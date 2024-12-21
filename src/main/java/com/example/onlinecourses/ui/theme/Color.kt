@@ -2,14 +2,15 @@ package com.example.onlinecourses.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val DarkPrimaryColor = Color(238, 244, 237)
-val DarkSecondaryColor = Color(141, 169, 196)
-val DarkBackgroundColor = Color(11, 37, 69)
-val DarkSurfaceColor = Color(19, 64, 116)
-val DarkTextColor = Color(255,255,255)
+val DarkPrimaryColor = Color(0xFF4BA3C7)       // Синий акцент
+val DarkSecondaryColor = Color(0xFF8DBFD4)     // Светлый голубой
+val DarkBackgroundColor = Color(0xFF0B2545)    // Тёмно-синий фон
+val DarkSurfaceColor = Color(0xFF133F74)       // Немного светлее фона
+val DarkTextColor = Color(0xFFFFFFFF)          // Белый текст на тёмном фоне
 
-val LightPrimaryColor = Color(79, 109, 122)
-val LightSecondaryColor = Color(192, 214, 223)
-val LightBackgroundColor = Color(219, 233, 238)
-val LightSurfaceColor = Color(74, 111, 165)
-val LightTextColor = Color(0,0,0)
+val LightPrimaryColor = Color(0xFF4F6D7A)      // Более насыщенный синий
+val LightSecondaryColor = Color(0xFFC0D6DF)    // Светлый голубой акцент
+val LightBackgroundColor = Color(0xFFDBE9EE)   // Почти белый фон
+val LightSurfaceColor = Color(0xFFE5F1F7)      // Чуть светлее фона
+val LightTextColor = Color(0xFF000000)         // Чёрный текст на светлом фоне
+

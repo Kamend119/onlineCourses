@@ -1,6 +1,7 @@
 package com.example.onlinecourses.entrance
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.onlinecourses.network.AuthorizationViewModel
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
+import com.example.onlinecourses.ui.theme.rememberDarkModeStateSystem
 
 @Composable
 fun Authorization(navController: NavHostController) {
@@ -33,15 +35,22 @@ fun Authorization(navController: NavHostController) {
     val isLoading = viewModel.isLoading
     val context = LocalContext.current
 
-    OnlineCursesTheme {
+    val isDarkMode = rememberDarkModeStateSystem()
+
+    OnlineCursesTheme(darkTheme = isDarkMode) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background) // Устанавливаем фон из цветовой схемы
                 .padding(75.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text("Авторизация", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Авторизация",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground // Цвет текста на фоне
+            )
 
             Column(
                 modifier = Modifier.weight(1f),
@@ -52,19 +61,38 @@ fun Authorization(navController: NavHostController) {
                 if (isLoading.value) {
                     Text(
                         text = "Загрузка...",
-                        modifier = Modifier.padding(top = 16.dp)
+                        modifier = Modifier.padding(top = 16.dp),
+                        color = MaterialTheme.colorScheme.onBackground // Цвет текста загрузки
                     )
                 } else {
                     OutlinedTextField(
                         value = login,
                         onValueChange = { login = it },
-                        label = { Text("Логин", style = MaterialTheme.typography.bodyMedium) }
+                        label = {
+                            Text(
+                                text = "Логин",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
                     )
 
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Пароль", style = MaterialTheme.typography.bodyMedium) }
+                        label = {
+                            Text(
+                                text = "Пароль",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
                     )
 
                     Button(
@@ -79,13 +107,13 @@ fun Authorization(navController: NavHostController) {
                             } else {
                                 viewModel.login(login, password) { userId, roleName ->
                                     if (roleName == "Админ") {
-                                        navController.navigate("mainAdministrator/${userId}/${roleName}")
+                                        navController.navigate("mainAdministrator/${userId}")
                                         Toast.makeText(context, "Добро пожаловать, Админ!", Toast.LENGTH_SHORT).show()
                                     } else if (roleName == "Владелец") {
-                                        navController.navigate("mainOwner/${userId}/${roleName}")
+                                        navController.navigate("mainOwner/${userId}")
                                         Toast.makeText(context, "Добро пожаловать, Владелец!", Toast.LENGTH_SHORT).show()
                                     } else if (roleName == "Студент") {
-                                        navController.navigate("mainStudent/${userId}/${roleName}")
+                                        navController.navigate("mainStudent/${userId}")
                                         Toast.makeText(context, "Добро пожаловать, Студент!", Toast.LENGTH_SHORT).show()
                                     } else {
                                         Toast.makeText(context, "Роль не распознана", Toast.LENGTH_SHORT).show()
@@ -95,9 +123,12 @@ fun Authorization(navController: NavHostController) {
                         },
                         modifier = Modifier.padding(top = 20.dp)
                     ) {
-                        Text("Войти", style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            text = "Войти",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary // Цвет текста на кнопке
+                        )
                     }
-
                 }
             }
         }

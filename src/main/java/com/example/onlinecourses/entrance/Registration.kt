@@ -3,6 +3,7 @@ package com.example.onlinecourses.entrance
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,10 +38,12 @@ import com.example.onlinecourses.R
 import com.example.onlinecourses.network.RegistrationViewModel
 import com.example.onlinecourses.network.User
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
+import com.example.onlinecourses.ui.theme.rememberDarkModeStateSystem
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.regex.Pattern
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Registration(
     navController: NavHostController
@@ -77,16 +80,23 @@ fun Registration(
         viewModel.loadRoles()
     }
 
-    OnlineCursesTheme {
+    val isDarkMode = rememberDarkModeStateSystem()
+
+    OnlineCursesTheme(darkTheme = isDarkMode) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(75.dp),
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(75.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             item {
-                Text("Регистрация", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = "Регистрация",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground // Цвет текста на фоне
+                )
 
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.padding(16.dp))
@@ -98,33 +108,78 @@ fun Registration(
                         OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
-                            label = { Text("Почта", style = MaterialTheme.typography.bodyMedium) }
+                            label = {
+                                Text(
+                                    text = "Почта",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
                         )
 
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
-                            label = { Text("Пароль", style = MaterialTheme.typography.bodyMedium) }
+                            label = {
+                                Text(
+                                    text = "Пароль",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
                         )
 
                         OutlinedTextField(
                             value = repeatPassword,
                             onValueChange = { repeatPassword = it },
-                            label = { Text("Повторите пароль", style = MaterialTheme.typography.bodyMedium) }
+                            label = {
+                                Text(
+                                    text = "Повторите пароль",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
                         )
 
                         OutlinedTextField(
                             value = firstName,
                             onValueChange = { firstName = it },
-                            label = { Text("Имя", style = MaterialTheme.typography.bodyMedium) }
+                            label = {
+                                Text(
+                                    text = "Имя",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
                         )
+
                         OutlinedTextField(
                             value = lastName,
                             onValueChange = { lastName = it },
-                            label = { Text("Фамилия", style = MaterialTheme.typography.bodyMedium) }
+                            label = {
+                                Text(
+                                    text = "Фамилия",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
                         )
 
-                        @OptIn(ExperimentalMaterial3Api::class)
                         ExposedDropdownMenuBox(
                             expanded = isDropdownExpanded,
                             onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
@@ -133,13 +188,25 @@ fun Registration(
                                 value = role,
                                 onValueChange = {},
                                 readOnly = true,
-                                label = { Text("Роль") },
+                                label = {
+                                    Text(
+                                        text = "Роль",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                    )
+                                },
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(
                                         expanded = isDropdownExpanded
                                     )
                                 },
-                                modifier = Modifier.menuAnchor()
+                                modifier = Modifier.menuAnchor().padding(top = 8.dp),
+                                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                )
                             )
                             ExposedDropdownMenu(
                                 expanded = isDropdownExpanded,
@@ -160,7 +227,13 @@ fun Registration(
                         OutlinedTextField(
                             value = dateBirthday,
                             onValueChange = {},
-                            label = { Text("Дата рождения", style = MaterialTheme.typography.bodyMedium) },
+                            label = {
+                                Text(
+                                    text = "Дата рождения",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                )
+                            },
                             readOnly = true,
                             trailingIcon = {
                                 IconButton(onClick = { datePickerDialog.show() }) {
@@ -170,7 +243,14 @@ fun Registration(
                                         modifier = Modifier.size(25.dp)
                                     )
                                 }
-                            }
+                            },
+                            modifier = Modifier.padding(top = 8.dp),
+                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
                         )
 
                         Button(
@@ -222,7 +302,11 @@ fun Registration(
                             },
                             modifier = Modifier.padding(top = 20.dp)
                         ) {
-                            Text("Зарегистрироваться", style = MaterialTheme.typography.labelMedium)
+                            Text(
+                                text = "Зарегистрироваться",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
 
                     }
@@ -231,6 +315,7 @@ fun Registration(
         }
     }
 }
+
 
 fun isEmailValid(email: String): Boolean {
     val emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"

@@ -1,6 +1,5 @@
 package com.example.onlinecourses.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -14,10 +13,12 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimaryColor,
     secondary = DarkSecondaryColor,
-    background = DarkSurfaceColor,
-    surface = DarkBackgroundColor,
+    background = DarkBackgroundColor,
+    surface = DarkSurfaceColor,
     onPrimary = DarkTextColor,
-    onSecondary = DarkTextColor
+    onSecondary = DarkTextColor,
+    onBackground = DarkTextColor,
+    onSurface = DarkTextColor
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -26,8 +27,11 @@ private val LightColorScheme = lightColorScheme(
     background = LightBackgroundColor,
     surface = LightSurfaceColor,
     onPrimary = LightTextColor,
-    onSecondary = LightTextColor
+    onSecondary = LightTextColor,
+    onBackground = LightTextColor,
+    onSurface = LightTextColor
 )
+
 
 
 @Composable

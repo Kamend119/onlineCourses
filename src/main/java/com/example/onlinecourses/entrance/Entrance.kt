@@ -1,5 +1,6 @@
 package com.example.onlinecourses.entrance
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,18 +14,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
+import com.example.onlinecourses.ui.theme.rememberDarkModeStateSystem
 
 @Composable
-fun Entrance(navController: NavHostController){
-    OnlineCursesTheme {
+fun Entrance(navController: NavHostController) {
+    val isDarkMode = rememberDarkModeStateSystem()
+
+    OnlineCursesTheme(darkTheme = isDarkMode) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background) // Используем фоновый цвет из схемы
                 .padding(75.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text("Вход", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Вход",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground // Текстовый цвет из схемы
+            )
 
             Column(
                 modifier = Modifier.weight(1f),
@@ -36,7 +45,11 @@ fun Entrance(navController: NavHostController){
                         navController.navigate("authorization")
                     }
                 ) {
-                    Text("Авторизация", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        text = "Авторизация",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimary // Цвет текста на кнопке
+                    )
                 }
 
                 Button(
@@ -44,7 +57,11 @@ fun Entrance(navController: NavHostController){
                         navController.navigate("registration")
                     }
                 ) {
-                    Text("Регистрация", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        text = "Регистрация",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimary // Цвет текста на кнопке
+                    )
                 }
             }
         }
