@@ -58,7 +58,7 @@ fun Authorization(navController: NavHostController) {
             Text(
                 text = "Авторизация",
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground // Цвет текста на фоне
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Column(
