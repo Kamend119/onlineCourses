@@ -53,6 +53,7 @@ fun MyApp() {
     var userId by remember { mutableStateOf("1") }
     var role by remember { mutableStateOf("Студент") }
     var subjectId by remember { mutableStateOf("1") }
+    var courseId by remember { mutableStateOf("1") }
 
     NavHost(navController = navController, startDestination = "entrance") {
         //entrance
@@ -69,16 +70,22 @@ fun MyApp() {
         composable("settings/{userId}/{role}") { Settings(navController, userId, role) } // готово
 
         //student
-        composable("certificate/{userId}") { Certificate(navController, userId) }
-        composable("mainCertificate/{userId}") { MainCertificate(navController, userId) }
-        composable("mainMyCourses/{userId}") { MainMyCourses(navController, userId) }
-        composable("coursesPreview/{userId}") { CoursesPreview(navController, userId) }
-        composable("mainSearchCourses/{userId}") { MainSearchCourses(navController, userId) }
-        composable("lecture/{userId}") { Lecture(navController, userId) }
-        composable("mainCourses/{userId}") { MainCourses(navController, userId) }
-        composable("question/{userId}") { Question(navController, userId) }
-        composable("completedCourses/{userId}") { CompletedCourses(navController, userId) }
-        composable("deferredCourses/{userId}") { DeferredCourses(navController, userId) }
+        composable("certificate/{userId}") { Certificate(navController, userId) } // ???
+        composable("mainCertificate/{userId}") { MainCertificate(navController, userId) } // ???
+        composable("mainMyCourses/{userId}") { MainMyCourses(navController, userId) } // проверить исправить переходы по страницам
+        composable("coursesPreview/{userId}/{courseId}") { backStackEntry -> // ???
+            courseId = backStackEntry.arguments?.getString("courseId")?: "1"
+            CoursesPreview(navController, userId, courseId)
+        }
+        composable("mainSearchCourses/{userId}") { MainSearchCourses(navController, userId) } // готово
+        composable("lecture/{userId}") { Lecture(navController, userId) } // ???
+        composable("mainCourses/{userId}/{courseId}") { backStackEntry -> // ???
+            courseId = backStackEntry.arguments?.getString("courseId")?: "1"
+            MainCourses(navController, userId, courseId)
+        }
+        composable("question/{userId}") { Question(navController, userId) } // ???
+        composable("completedCourses/{userId}") { CompletedCourses(navController, userId) } // проверить исправить переходы по страницам
+        composable("deferredCourses/{userId}") { DeferredCourses(navController, userId) } // проверить исправить переходы по страницам
         composable("mainStudent/{userId}") { backStackEntry -> // готово
             userId = backStackEntry.arguments?.getString("userId")?: "1"
             MainStudent(navController, userId)

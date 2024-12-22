@@ -141,7 +141,7 @@ fun Account(navController: NavHostController, userId: String, role: String) {
                         }
                         Button(
                             onClick = {
-                                navController.navigate("certificate/${userId}")
+                                navController.navigate("mainCertificate/${userId}")
                             },
                             modifier = Modifier
                                 .padding(bottom = 4.dp)

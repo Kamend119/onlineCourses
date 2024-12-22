@@ -33,7 +33,6 @@ fun AppBarStudent(
     showBottomBar: Boolean = true,
     navController: NavHostController,
     userId: String,
-    onBottomBarIconClick: (String) -> Unit = {},
     content: @Composable () -> Unit
 ) {
     OnlineCursesTheme {
@@ -99,21 +98,21 @@ fun AppBarStudent(
                                 horizontalArrangement = Arrangement.SpaceEvenly,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                IconButton(onClick = { onBottomBarIconClick("search") }) {
+                                IconButton(onClick = { navController.navigate("mainSearchCourses/${userId}") }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.search),
                                         contentDescription = "Поиск",
                                         modifier = Modifier.size(30.dp)
                                     )
                                 }
-                                IconButton(onClick = { onBottomBarIconClick("home") }) {
+                                IconButton(onClick = { navController.navigate("mainStudent/${userId}") }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.home),
                                         contentDescription = "Главная",
                                         modifier = Modifier.size(35.dp)
                                     )
                                 }
-                                IconButton(onClick = { onBottomBarIconClick("courses") }) {
+                                IconButton(onClick = { navController.navigate("mainMyCourses/${userId}") }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.book),
                                         contentDescription = "Мои курсы",
