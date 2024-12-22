@@ -206,11 +206,7 @@ fun Registration(
                                         color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
                                     )
                                 },
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = isDropdownExpanded
-                                    )
-                                },
+                                trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(isDropdownExpanded)},
                                 modifier = Modifier.menuAnchor().padding(top = 8.dp),
                                 colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
                                     focusedBorderColor = MaterialTheme.colorScheme.primary,

@@ -45,7 +45,7 @@ fun Authorization(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Устанавливаем фон из цветовой схемы
+                .background(MaterialTheme.colorScheme.background)
                 .padding(75.dp)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {

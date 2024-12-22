@@ -4,28 +4,32 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.onlinecourses.network.SupportViewModel
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun Appeal(){
-    val appealTopic = remember { "Техническая ошибка" }
-    val appealStatus = remember { "В обработке" }
-    val appealText = remember { "Не удается войти в приложение. Появляется ошибка 403." }
-    val responseText = remember { "Ваше обращение принято. Мы разберемся с проблемой в течение 24 часов." }
+fun Appeal(userId: String, subjectId: String) {
+    val viewModel: SupportViewModel = viewModel()
+    LaunchedEffect(userId) {
+        viewModel.getSupportRequests(userId)
+    }
+    val supportRequests by viewModel.supportRequests
+    val subjectIdInt = subjectId.toIntOrNull()
+    val request = if (subjectIdInt != null) {
+        supportRequests.find { it.request_id == subjectIdInt }
+    } else {
+        null
+    }
 
     OnlineCursesTheme {
         Column(
@@ -35,50 +39,58 @@ fun Appeal(){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text("Поддержка", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 16.dp))
-
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                OutlinedTextField(
-                    value = appealTopic,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Тема обращения") },
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge
-                )
-
-                OutlinedTextField(
-                    value = appealStatus,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Статус обращения") },
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge
-                )
-
-                OutlinedTextField(
-                    value = appealText,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Обращение") },
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    textStyle = MaterialTheme.typography.bodyMedium
-                )
-
-                if (responseText.isNotEmpty()) {
+            Text(
+                "Поддержка",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            if (request != null) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
                     OutlinedTextField(
-                        value = responseText,
+                        value = request.subject_name,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Ответ") },
+                        label = { Text("Тема обращения") },
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        textStyle = MaterialTheme.typography.bodyLarge
+                    )
+
+                    OutlinedTextField(
+                        value = request.status,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Статус обращения") },
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        textStyle = MaterialTheme.typography.bodyLarge
+                    )
+
+                    OutlinedTextField(
+                        value = request.message,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Обращение") },
                         modifier = Modifier.padding(bottom = 16.dp),
                         textStyle = MaterialTheme.typography.bodyMedium
                     )
+
+                    if (request.admin_answer != null) {
+                        OutlinedTextField(
+                            value = request.admin_answer,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Ответ") },
+                            modifier = Modifier.padding(bottom = 16.dp),
+                            textStyle = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
+            } else {
+                // Если request не найден
+                Text("Обращение не найдено", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

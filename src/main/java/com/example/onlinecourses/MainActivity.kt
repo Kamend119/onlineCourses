@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,8 +52,7 @@ fun MyApp() {
     val navController = rememberNavController()
     var userId by remember { mutableStateOf("1") }
     var role by remember { mutableStateOf("Студент") }
-    var subjectId by remember { mutableIntStateOf(1) }
-
+    var subjectId by remember { mutableStateOf("1") }
 
     NavHost(navController = navController, startDestination = "entrance") {
         //entrance
@@ -87,8 +85,12 @@ fun MyApp() {
         }
 
         //support
-        composable("support/{userId}") { Support(navController, userId) } // проверить
-        composable("appeal/{userId}/{subjectId}") { Appeal(navController, userId, subjectId) } // нету метода апи для просмотра конкретного обращения в поддержку
-        composable("addAppeal/{userId}") { AddAppeal(navController, userId) } // проверить
+        composable("support/{userId}") { Support(navController, userId) } // готово
+        composable("appeal/{userId}/{subjectId}") { backStackEntry -> // готово
+            userId = backStackEntry.arguments?.getString("userId")?: "1"
+            subjectId = backStackEntry.arguments?.getString("subjectId")?: "1"
+            Appeal(userId, subjectId)
+        }
+        composable("addAppeal/{userId}") { AddAppeal(navController, userId) } // готово
     }
 }
