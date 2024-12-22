@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,19 +30,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.onlinecourses.R
+import com.example.onlinecourses.functions.isEmailValid
+import com.example.onlinecourses.functions.isPasswordValid
+import com.example.onlinecourses.functions.isValidAge
 import com.example.onlinecourses.network.RegistrationViewModel
 import com.example.onlinecourses.network.User
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 import com.example.onlinecourses.ui.theme.rememberDarkModeStateSystem
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.regex.Pattern
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +54,7 @@ fun Registration(
     navController: NavHostController
 ) {
     val viewModel: RegistrationViewModel = viewModel()
+    val focusManager = LocalFocusManager.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
@@ -87,7 +93,12 @@ fun Registration(
             modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(75.dp),
+                    .padding(75.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -314,34 +325,4 @@ fun Registration(
             }
         }
     }
-}
-
-
-fun isEmailValid(email: String): Boolean {
-    val emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
-    return Pattern.matches(emailPattern, email)
-}
-
-fun isValidAge(dateBirthday: String): Boolean {
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    val birthDate = dateFormat.parse(dateBirthday) ?: return false
-
-    val currentDate = Calendar.getInstance().time
-    val currentCalendar = Calendar.getInstance().apply { time = currentDate }
-    val birthCalendar = Calendar.getInstance().apply { time = birthDate }
-
-    val age = currentCalendar.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
-
-    if (currentCalendar.get(Calendar.MONTH) < birthCalendar.get(Calendar.MONTH) ||
-        (currentCalendar.get(Calendar.MONTH) == birthCalendar.get(Calendar.MONTH) &&
-                currentCalendar.get(Calendar.DAY_OF_MONTH) < birthCalendar.get(Calendar.DAY_OF_MONTH))) {
-        return age >= 14
-    }
-
-    return age >= 14
-}
-
-fun isPasswordValid(password: String): Boolean {
-    val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$"
-    return Pattern.matches(passwordPattern, password)
 }

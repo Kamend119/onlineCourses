@@ -48,7 +48,7 @@ fun Entrance(navController: NavHostController) {
                     Text(
                         text = "Авторизация",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimary // Цвет текста на кнопке
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
 

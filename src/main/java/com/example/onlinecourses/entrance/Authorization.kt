@@ -2,6 +2,7 @@ package com.example.onlinecourses.entrance
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -31,6 +34,7 @@ fun Authorization(navController: NavHostController) {
 
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     val isLoading = viewModel.isLoading
     val context = LocalContext.current
@@ -42,7 +46,12 @@ fun Authorization(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background) // Устанавливаем фон из цветовой схемы
-                .padding(75.dp),
+                .padding(75.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {

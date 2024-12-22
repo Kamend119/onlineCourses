@@ -2,9 +2,11 @@ package com.example.onlinecourses
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,18 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +31,8 @@ fun AppBarStudent(
     title: String,
     showTopBar: Boolean = true,
     showBottomBar: Boolean = true,
-    onTopBarIconClick: (String) -> Unit = {},
+    navController: NavHostController,
+    userId: String,
     onBottomBarIconClick: (String) -> Unit = {},
     content: @Composable () -> Unit
 ) {
@@ -59,14 +58,14 @@ fun AppBarStudent(
                                     modifier = Modifier.padding(10.dp)
                                 )
                                 Row {
-                                    IconButton(onClick = { onTopBarIconClick("account") }) {
+                                    IconButton(onClick = { navController.navigate("account/${userId}/Студент")  }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.user),
                                             contentDescription = "Акаунт",
                                             modifier = Modifier.size(35.dp)
                                         )
                                     }
-                                    IconButton(onClick = { onTopBarIconClick("setting") }) {
+                                    IconButton(onClick = { navController.navigate("settings/${userId}/Студент") }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.settings),
                                             contentDescription = "Настройки",
@@ -133,6 +132,7 @@ fun AppBarStudent(
         }
     }
 }
+/*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -347,3 +347,4 @@ fun AppBarAdministrator(
         }
     }
 }
+*/

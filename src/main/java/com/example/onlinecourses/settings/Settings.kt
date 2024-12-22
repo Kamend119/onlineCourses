@@ -8,33 +8,58 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
+import com.example.onlinecourses.ui.theme.ThemePreferences
+import com.example.onlinecourses.ui.theme.rememberDarkModeState
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun Settings(){
-    val user = "Студент"
+fun Settings(navController: NavHostController, userId: String, role: String) {
+    val context = LocalContext.current
+    val themePreferences = remember { ThemePreferences(context) }
+    val (isDarkMode, setIsDarkMode) = rememberDarkModeState()
 
     OnlineCursesTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(50.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+            IconButton(
+                onClick = {
+                    navController.navigate("mainStudent/${userId}")
+                },
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Закрыть",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
             Text(
                 text = "Настройки",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Column(
@@ -53,19 +78,20 @@ fun Settings(){
                 Text(
                     text = "Профиль",
                     style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
 
                 Button(
                     onClick = {
-
+                        navController.navigate("changingThePassword/$userId/$role")
                     },
                     Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text("Сменить пароль", style = MaterialTheme.typography.labelMedium)
                 }
 
-                if (user != "Администратор"){
+                if (role != "Админ") {
                     Spacer(
                         Modifier
                             .padding(vertical = 16.dp)
@@ -77,17 +103,57 @@ fun Settings(){
                     Text(
                         text = "Поддержка",
                         style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
 
                     Button(
                         onClick = {
-
+                            navController.navigate("support/$userId")
                         },
                         Modifier.align(Alignment.CenterHorizontally)
                     ) {
                         Text("Обращения", style = MaterialTheme.typography.labelMedium)
                     }
+                }
+
+                Spacer(
+                    Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(MaterialTheme.colorScheme.primary)
+                )
+
+                Text(
+                    text = "Темная тема",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Switch(
+                    checked = isDarkMode,
+                    onCheckedChange = { isChecked ->
+                        setIsDarkMode(isChecked)
+                        themePreferences.setDarkModeState(isChecked)
+                    }
+                )
+
+                Spacer(
+                    Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(MaterialTheme.colorScheme.primary)
+                )
+                Button(
+                    onClick = {
+                        // Логика выхода из аккаунта (например, очистка данных и возврат на экран входа)
+                        navController.navigate("entrance")
+                    },
+                    Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Выйти из аккаунта", style = MaterialTheme.typography.labelMedium)
                 }
             }
         }
