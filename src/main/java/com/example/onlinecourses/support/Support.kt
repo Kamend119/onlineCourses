@@ -67,6 +67,7 @@ fun Support(navController: NavHostController, userId: String) {
             ) {
                 Text(
                     "Поддержка",
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 when {

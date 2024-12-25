@@ -9,10 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.launch
-
-val Context.dataStoreSettings by preferencesDataStore(name = "settings")
 
 class ThemePreferences(context: Context) {
     private val preferences: SharedPreferences = context.getSharedPreferences("theme_preferences", Context.MODE_PRIVATE)

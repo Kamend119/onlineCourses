@@ -113,7 +113,6 @@ fun Authorization(navController: NavHostController) {
                             viewModel.login(login, password) { userId, roleName ->
                                 val userPreferences = UserPreferences(context)
                                 userPreferences.setUser(userId, roleName)
-                                println("$userId ----------------------- $roleName")
                                 when (roleName) {
                                     "Студент" -> navController.navigate("mainStudent/$userId/$roleName")
                                     else -> Toast.makeText(context, "Роль не распознана", Toast.LENGTH_SHORT).show()

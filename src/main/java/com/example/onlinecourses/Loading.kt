@@ -39,7 +39,6 @@ fun Loading(navController: NavHostController, userId: String, role: String) {
             CircularProgressIndicator()
         }
     } else {
-        println("${user.value.userId} ----------------------- ${user.value.role}")
         when {
             user.value.role == "Студент" && user.value.userId.isNotEmpty() -> navController.navigate("mainStudent/${user.value.userId}/${user.value.role}")
             user.value.role == "Не распознано" && user.value.userId == "-1" -> navController.navigate("entrance")

@@ -41,10 +41,10 @@ import com.example.onlinecourses.R
 import com.example.onlinecourses.functions.isEmailValid
 import com.example.onlinecourses.functions.isPasswordValid
 import com.example.onlinecourses.functions.isValidAge
+import com.example.onlinecourses.functions.rememberDarkModeStateSystem
 import com.example.onlinecourses.network.RegistrationViewModel
 import com.example.onlinecourses.network.User
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
-import com.example.onlinecourses.functions.rememberDarkModeStateSystem
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -106,7 +106,7 @@ fun Registration(
                 Text(
                     text = "Регистрация",
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground // Цвет текста на фоне
+                    color = MaterialTheme.colorScheme.onBackground
                 )
 
                 if (isLoading) {
@@ -123,12 +123,12 @@ fun Registration(
                                 Text(
                                     text = "Почта",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             modifier = Modifier
                                 .padding(top = 8.dp)
-                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                                .background(MaterialTheme.colorScheme.surface)
                         )
 
                         OutlinedTextField(
@@ -138,12 +138,12 @@ fun Registration(
                                 Text(
                                     text = "Пароль",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             modifier = Modifier
                                 .padding(top = 8.dp)
-                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                                .background(MaterialTheme.colorScheme.surface)
                         )
 
                         OutlinedTextField(
@@ -153,12 +153,12 @@ fun Registration(
                                 Text(
                                     text = "Повторите пароль",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             modifier = Modifier
                                 .padding(top = 8.dp)
-                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                                .background(MaterialTheme.colorScheme.surface)
                         )
 
                         OutlinedTextField(
@@ -168,12 +168,12 @@ fun Registration(
                                 Text(
                                     text = "Имя",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             modifier = Modifier
                                 .padding(top = 8.dp)
-                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                                .background(MaterialTheme.colorScheme.surface)
                         )
 
                         OutlinedTextField(
@@ -183,12 +183,12 @@ fun Registration(
                                 Text(
                                     text = "Фамилия",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             modifier = Modifier
                                 .padding(top = 8.dp)
-                                .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                                .background(MaterialTheme.colorScheme.surface)
                         )
 
                         ExposedDropdownMenuBox(
@@ -203,7 +203,7 @@ fun Registration(
                                     Text(
                                         text = "Роль",
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                        color = MaterialTheme.colorScheme.onBackground
                                     )
                                 },
                                 trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(isDropdownExpanded)},
@@ -238,7 +238,7 @@ fun Registration(
                                 Text(
                                     text = "Дата рождения",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             readOnly = true,

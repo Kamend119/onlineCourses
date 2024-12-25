@@ -48,7 +48,6 @@ class RegistrationViewModel() : ViewModel() {
     var registrationResult by mutableStateOf<String?>(null)
         private set
 
-    // Загружаем список ролей
     fun loadRoles() {
         viewModelScope.launch {
             isLoading = true
@@ -70,8 +69,6 @@ class RegistrationViewModel() : ViewModel() {
         }
     }
 
-
-    // Регистрируем пользователя
     fun registerUser(user: User, onSuccess: () -> Unit) {
         viewModelScope.launch {
             isLoading = true
@@ -80,7 +77,7 @@ class RegistrationViewModel() : ViewModel() {
                 val response = RetrofitClient.instance.registration(user)
                 if (response.isSuccessful) {
                     val body = response.body()
-                    if (body?.userId != null) {  // Проверяем наличие userId
+                    if (body?.userId != null) {
                         registrationResult = "Регистрация успешна. Ваш ID: ${body.userId}"
                         onSuccess()
                     } else {
@@ -154,12 +151,10 @@ class AuthorizationViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                // Передаем login и password как параметры GET-запроса
                 val response = apiService.login(login, password)
                 handleResponse(response, onLoginSuccess)
             } catch (e: Exception) {
                 _isLoading.value = false
-                // Обработка ошибки (например, показать уведомление)
             }
         }
     }
@@ -171,8 +166,6 @@ class AuthorizationViewModel : ViewModel() {
             if (loginResponse != null) {
                 onLoginSuccess(loginResponse.userId.toString(), loginResponse.roleName)
             }
-        } else {
-            // Обработка ошибки на сервере
         }
     }
 }
@@ -249,7 +242,6 @@ class SupportViewModel : ViewModel() {
 }
 
 class MainStudentViewModel() : ViewModel() {
-
     private val _dailyStatsState = MutableStateFlow(DailyStatsState())
     val dailyStatsState: StateFlow<DailyStatsState> = _dailyStatsState
 
@@ -481,7 +473,7 @@ class MyCoursesViewModel : ViewModel() {
 class CourseViewModelCreateStudentCourse() : ViewModel() {
     var courseName = ""
     var courseDescription = ""
-    val isLoading = mutableStateOf(false) // Используем MutableState для Compose
+    val isLoading = mutableStateOf(false)
     var message = ""
 
     fun getCourseDetails(courseId: Int) {
@@ -621,11 +613,9 @@ class QuestionViewModel : ViewModel() {
                 if (answerResponse.isSuccessful) {
                     val responseBody = answerResponse.body()
 
-                    // Проверяем, является ли responseBody Map<String, String> и содержит ли оно ключ "message"
                     if (responseBody is Map<*, *> && responseBody["message"] == "None!!!") {
                         _userAnswer.value = null
                     } else if (responseBody is Map<*, *> && responseBody["answer_id"] != null) {
-                        // Если responseBody представляет корректные данные, то преобразуем
                         val gson = Gson()
                         try {
                             val userAnswerData = gson.fromJson(gson.toJson(responseBody), GetAnswersUser::class.java)

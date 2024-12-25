@@ -103,7 +103,7 @@ fun ChangingThePassword(navController: NavHostController, userId: String, role: 
                     },
                     modifier = Modifier
                         .padding(top = 16.dp)
-                        .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                        .background(MaterialTheme.colorScheme.surface)
                 )
 
                 if (errorMessage.isNotEmpty()) {
@@ -124,7 +124,6 @@ fun ChangingThePassword(navController: NavHostController, userId: String, role: 
 
                 Button(
                     onClick = {
-                        // Проверка на корректность пароля
                         if (!isPasswordValid(newPassword)) {
                             Toast.makeText(
                                 context,
@@ -134,7 +133,6 @@ fun ChangingThePassword(navController: NavHostController, userId: String, role: 
                             return@Button
                         }
 
-                        // Проверка на совпадение паролей
                         if (newPassword != repeatPassword) {
                             Toast.makeText(context, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
                             return@Button

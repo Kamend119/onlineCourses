@@ -42,23 +42,18 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val viewModel: QuestionViewModel = viewModel()
-
-    // Состояние для данных
     val stepData by viewModel.stepData.collectAsState()
     val userAnswer by viewModel.userAnswer.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    // Локальное состояние для текстового ответа
     var textAnswer by remember { mutableStateOf("") }
     val answerOptionsState = remember { mutableStateListOf<Pair<String, Boolean>>() }
 
-    // Загрузка данных о шаге
     LaunchedEffect(Unit) {
         viewModel.loadStepData(stepId.toInt(), userId.toInt())
     }
 
-    // Обновление состояния в зависимости от данных
     LaunchedEffect(stepData, userAnswer) {
         Log.d("QuestionScreen", "stepData: $stepData")
         Log.d("QuestionScreen", "userAnswer: $userAnswer")
@@ -66,10 +61,8 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
             Log.d("QuestionScreen", "Answer Text: ${userAnswer!!.answer_text}")
         }
         if (stepData?.answerOptions.isNullOrEmpty()) {
-            // Если вариантов нет, показываем текстовый ответ
             textAnswer = userAnswer?.answer_text?.joinToString(" ") ?: ""
         } else {
-            // Если есть варианты ответа, обрабатываем их
             answerOptionsState.clear()
             stepData?.answerOptions?.forEach { option ->
                 val isChecked = userAnswer?.answer_text?.contains(option) == true
@@ -108,7 +101,6 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Top
                     ) {
-                        // Текст вопроса
                         OutlinedTextField(
                             value = stepData?.questionText.orEmpty(),
                             onValueChange = {},
@@ -119,7 +111,6 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
                                 .padding(bottom = 16.dp)
                         )
 
-                        // Если вопрос уже оценен
                         if (userAnswer?.estimation != null && userAnswer?.estimation != 0) {
                             Text(
                                 "Оценка: ${userAnswer!!.estimation}",
@@ -133,7 +124,6 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
                             )
                         } else {
                             Column(Modifier.weight(1f)) {
-                                // Поле ввода текста ответа (если нет вариантов ответа)
                                 if (stepData?.answerOptions.isNullOrEmpty()) {
                                     OutlinedTextField(
                                         value = textAnswer,
@@ -144,7 +134,6 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
                                             .padding(bottom = 16.dp)
                                     )
                                 } else {
-                                    // Список вариантов ответа
                                     LazyColumn(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -175,7 +164,6 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
                                 }
                             }
 
-                            // Кнопка сохранения ответа
                             Button(
                                 onClick = {
                                     val finalAnswerArray = if (stepData?.answerOptions.isNullOrEmpty()) {

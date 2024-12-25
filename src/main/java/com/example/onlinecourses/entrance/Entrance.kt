@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 import com.example.onlinecourses.functions.rememberDarkModeStateSystem
+import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
 @Composable
 fun Entrance(navController: NavHostController) {
@@ -24,7 +24,7 @@ fun Entrance(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Используем фоновый цвет из схемы
+                .background(MaterialTheme.colorScheme.background)
                 .padding(75.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -32,7 +32,7 @@ fun Entrance(navController: NavHostController) {
             Text(
                 text = "Вход",
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground // Текстовый цвет из схемы
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Column(
@@ -60,7 +60,7 @@ fun Entrance(navController: NavHostController) {
                     Text(
                         text = "Регистрация",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimary // Цвет текста на кнопке
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

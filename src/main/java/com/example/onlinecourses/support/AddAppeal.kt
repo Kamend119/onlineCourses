@@ -39,7 +39,6 @@ fun AddAppeal(navController: NavHostController, userId: String) {
     val supportViewModel: SupportViewModel = viewModel()
     val supportSubjects by supportViewModel.supportSubjects
     val isLoadingSubjects by supportViewModel.isLoadingSubjects
-    val errorMessage by supportViewModel.subjectError
 
     var expanded by remember { mutableStateOf(false) }
     var selectedTopic by remember { mutableStateOf("Выберите тему обращения") }

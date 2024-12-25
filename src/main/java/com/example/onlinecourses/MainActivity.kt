@@ -55,52 +55,52 @@ fun MyApp() {
         composable("loading") { Loading(navController, userId, role) }
 
         //entrance
-        composable("entrance") { Entrance(navController) } // готово
-        composable("authorization") { Authorization(navController) } // готово
-        composable("registration") { Registration(navController) } // готово
+        composable("entrance") { Entrance(navController) }
+        composable("authorization") { Authorization(navController) }
+        composable("registration") { Registration(navController) }
 
         //account
-        composable("account/{userId}/{role}") { Account(navController, userId, role) } // готово
-        composable("editAccount/{userId}") { EditAccount(navController, userId) } // готово
+        composable("account/{userId}/{role}") { Account(navController, userId, role) }
+        composable("editAccount/{userId}") { EditAccount(navController, userId) }
 
         //settings
-        composable("changingThePassword/{userId}/{role}") { ChangingThePassword(navController, userId, role) } // готово
-        composable("settings/{userId}/{role}") { Settings(navController,userId,role) } // готово
+        composable("changingThePassword/{userId}/{role}") { ChangingThePassword(navController, userId, role) }
+        composable("settings/{userId}/{role}") { Settings(navController,userId,role) }
 
         //student
-        composable("mainMyCourses/{userId}") { MainMyCourses(navController, userId) } // готово
-        composable("coursesPreview/{userId}/{courseId}") { backStackEntry -> // готово
+        composable("mainMyCourses/{userId}") { MainMyCourses(navController, userId) }
+        composable("coursesPreview/{userId}/{courseId}") { backStackEntry ->
             courseId = backStackEntry.arguments?.getString("courseId") ?: "-1"
             CoursesPreview(navController, userId, courseId)
         }
-        composable("mainSearchCourses/{userId}") {MainSearchCourses(navController,userId) } // готово
-        composable("lecture/{userId}/{stepId}") { backStackEntry -> // готово
+        composable("mainSearchCourses/{userId}") {MainSearchCourses(navController,userId) }
+        composable("lecture/{userId}/{stepId}") { backStackEntry ->
             userId = backStackEntry.arguments?.getString("userId") ?: "-1"
             stepId = backStackEntry.arguments?.getString("stepId") ?: "-1"
             Lecture(navController, userId, stepId)
         }
-        composable("mainCourses/{userId}/{courseId}") { backStackEntry -> // готово
+        composable("mainCourses/{userId}/{courseId}") { backStackEntry ->
             courseId = backStackEntry.arguments?.getString("courseId") ?: "-1"
             MainCourses(navController, userId, courseId)
         }
-        composable("question/{userId}/{stepId}") { backStackEntry -> // готово
+        composable("question/{userId}/{stepId}") { backStackEntry ->
             userId = backStackEntry.arguments?.getString("userId") ?: "-1"
             stepId = backStackEntry.arguments?.getString("stepId") ?: "-1"
             Question(navController, userId, stepId)
         }
-        composable("mainStudent/{userId}/{role}") { backStackEntry -> // готово
+        composable("mainStudent/{userId}/{role}") { backStackEntry ->
             userId = backStackEntry.arguments?.getString("userId") ?: "-1"
             role = backStackEntry.arguments?.getString("role") ?: "-1"
             MainStudent(navController, userId, role)
         }
 
         //support
-        composable("support/{userId}") { Support(navController, userId) } // готово
-        composable("appeal/{userId}/{subjectId}") { backStackEntry -> // готово
+        composable("support/{userId}") { Support(navController, userId) }
+        composable("appeal/{userId}/{subjectId}") { backStackEntry ->
             userId = backStackEntry.arguments?.getString("userId") ?: "-1"
             subjectId = backStackEntry.arguments?.getString("subjectId") ?: "-1"
             Appeal(userId, subjectId)
         }
-        composable("addAppeal/{userId}") { AddAppeal(navController, userId) } // готово
+        composable("addAppeal/{userId}") { AddAppeal(navController, userId) }
     }
 }

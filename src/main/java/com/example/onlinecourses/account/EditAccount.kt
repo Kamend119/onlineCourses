@@ -97,7 +97,7 @@ fun EditAccount(navController: NavHostController, userId: String) {
                     colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                 )
                 OutlinedTextField(
-                    value = userDataState.firstName ?: "",
+                    value = userDataState.firstName,
                     onValueChange = { viewModel.updateFirstName(it) },
                     label = {
                         Text(
@@ -110,7 +110,7 @@ fun EditAccount(navController: NavHostController, userId: String) {
                 )
 
                 OutlinedTextField(
-                    value = userDataState.lastName ?: "",
+                    value = userDataState.lastName,
                     onValueChange = { viewModel.updateLastName(it) },
                     label = {
                         Text(
@@ -123,7 +123,7 @@ fun EditAccount(navController: NavHostController, userId: String) {
                 )
 
                 OutlinedTextField(
-                    value = userDataState.email ?: "",
+                    value = userDataState.email,
                     onValueChange = { viewModel.updateEmail(it) },
                     label = {
                         Text(
@@ -136,7 +136,7 @@ fun EditAccount(navController: NavHostController, userId: String) {
                 )
 
                 OutlinedTextField(
-                    value = userDataState.date_birth ?: "",
+                    value = userDataState.date_birth,
                     onValueChange = {},
                     label = {
                         Text(

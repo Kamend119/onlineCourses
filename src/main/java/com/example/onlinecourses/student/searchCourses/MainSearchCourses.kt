@@ -68,12 +68,11 @@ fun MainSearchCourses(navController: NavHostController, userId: String) {
     val categories = courseViewModel.categories.value
     val courses = courseViewModel.courses.value
 
-    // Фильтрация курсов на основе поискового запроса и выбранных категорий
     LaunchedEffect(searchQuery, selectedCategories, courses) {
         filteredCourses = if (courses.isEmpty()) {
-            emptyList() // Если курсы не загружены, показываем пустой список
+            emptyList()
         } else if (searchQuery.isBlank() && selectedCategories.isEmpty()) {
-            courses // Показываем все курсы, если поисковая строка пуста и категории не выбраны
+            courses
         } else {
             courses.filter { course ->
                 val matchesSearchQuery = course.nameCourse.contains(searchQuery, ignoreCase = true) ||

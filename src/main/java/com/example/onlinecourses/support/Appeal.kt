@@ -89,7 +89,6 @@ fun Appeal(userId: String, subjectId: String) {
                     }
                 }
             } else {
-                // Если request не найден
                 Text("Обращение не найдено", style = MaterialTheme.typography.bodyMedium)
             }
         }

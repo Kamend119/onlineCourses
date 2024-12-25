@@ -39,7 +39,7 @@ fun MainStudent(navController: NavHostController, userId: String, role: String) 
     val state by studentViewModel.dailyStatsState.collectAsState()
 
     LaunchedEffect(userId) {
-        studentViewModel.fetchDailyStats(userId.toInt()) // Загружаем данные по статистике
+        studentViewModel.fetchDailyStats(userId.toInt())
     }
 
     var showDialog by remember { mutableStateOf(false) }
@@ -122,7 +122,7 @@ fun MainStudent(navController: NavHostController, userId: String, role: String) 
                     onDismissRequest = { showDialog = false },
                     confirmButton = {
                         TextButton(onClick = { showDialog = false }) {
-                            Text("Ок", color = MaterialTheme.colorScheme.onPrimary)
+                            Text("Ок", color = MaterialTheme.colorScheme.onSurface)
                         }
                     },
                     title = { Text("Количество заданий", color = MaterialTheme.colorScheme.onSurface) },

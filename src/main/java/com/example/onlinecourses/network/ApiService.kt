@@ -151,7 +151,6 @@ interface ApiService {
     @GET("get_answers_by_step")
     suspend fun getAnswersByStep(@Query("step_id") stepId: Int): Response<List<AnswerStep>>
 
-    // поставить оценку
     @POST("set_estimation")
     suspend fun setEstimation(
         @Query("answer_id") answerId: Int,
