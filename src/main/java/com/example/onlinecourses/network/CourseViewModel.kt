@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.onlinecourses.functions.formatDateString
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -618,12 +619,33 @@ class QuestionViewModel : ViewModel() {
                 }
 
                 if (answerResponse.isSuccessful) {
-                    _userAnswer.value = answerResponse.body()
+                    val responseBody = answerResponse.body()
+
+                    // Проверяем, является ли responseBody Map<String, String> и содержит ли оно ключ "message"
+                    if (responseBody is Map<*, *> && responseBody["message"] == "None!!!") {
+                        _userAnswer.value = null
+                    } else if (responseBody is Map<*, *> && responseBody["answer_id"] != null) {
+                        // Если responseBody представляет корректные данные, то преобразуем
+                        val gson = Gson()
+                        try {
+                            val userAnswerData = gson.fromJson(gson.toJson(responseBody), GetAnswersUser::class.java)
+                            _userAnswer.value = userAnswerData
+                        } catch (e: Exception) {
+                            _errorMessage.value = "Ошибка при десериализации ответа пользователя: ${e.message}"
+                        }
+                    } else if (responseBody is GetAnswersUser) {
+                        _userAnswer.value = responseBody
+                    } else {
+                        _errorMessage.value = "Ответ не соответствует ожидаемому типу."
+                        _userAnswer.value = null
+                    }
                 } else {
+                    _errorMessage.value = "Ошибка загрузки ответа пользователя"
                     _userAnswer.value = null
                 }
             } catch (e: Exception) {
                 _errorMessage.value = e.message
+                _userAnswer.value = null
             } finally {
                 _isLoading.value = false
             }

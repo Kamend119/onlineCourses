@@ -192,5 +192,5 @@ interface ApiService {
     suspend fun getCategories(): Response<List<Categories>>
 
     @GET("get_answers_by_step_for_user")
-    suspend fun getAnswersByStepForUser(@Query("step_id") stepId: Int, @Query("user_id") userId: Int): Response<GetAnswersUser>
+    suspend fun getAnswersByStepForUser(@Query("step_id") stepId: Int, @Query("user_id") userId: Int): Response<Any>
 }

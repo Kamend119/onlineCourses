@@ -1,5 +1,6 @@
 package com.example.onlinecourses.student.takingCourses
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,134 +36,173 @@ import com.example.onlinecourses.AppBarStudent
 import com.example.onlinecourses.network.QuestionViewModel
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
+
 @Composable
 fun Question(navController: NavHostController, userId: String, stepId: String) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val viewModel: QuestionViewModel = viewModel()
 
+    // Состояние для данных
     val stepData by viewModel.stepData.collectAsState()
     val userAnswer by viewModel.userAnswer.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    var textAnswer by remember { mutableStateOf(userAnswer?.answer_text?.joinToString(" ") ?: "") }
+    // Локальное состояние для текстового ответа
+    var textAnswer by remember { mutableStateOf("") }
     val answerOptionsState = remember { mutableStateListOf<Pair<String, Boolean>>() }
 
+    // Загрузка данных о шаге
     LaunchedEffect(Unit) {
         viewModel.loadStepData(stepId.toInt(), userId.toInt())
     }
 
-    LaunchedEffect(userAnswer) {
-        if (stepData?.answerOptions.isNullOrEmpty()) {
-            textAnswer = userAnswer?.answer_text?.joinToString(" ") ?: ""
+    // Обновление состояния в зависимости от данных
+    LaunchedEffect(stepData, userAnswer) {
+        Log.d("QuestionScreen", "stepData: $stepData")
+        Log.d("QuestionScreen", "userAnswer: $userAnswer")
+        if (userAnswer != null) {
+            Log.d("QuestionScreen", "Answer Text: ${userAnswer!!.answer_text}")
         }
-        answerOptionsState.clear()
-        stepData?.answerOptions?.forEach { option ->
-            val isChecked = userAnswer?.answer_text?.contains(option) == true
-            answerOptionsState.add(option to isChecked)
+        if (stepData?.answerOptions.isNullOrEmpty()) {
+            // Если вариантов нет, показываем текстовый ответ
+            textAnswer = userAnswer?.answer_text?.joinToString(" ") ?: ""
+        } else {
+            // Если есть варианты ответа, обрабатываем их
+            answerOptionsState.clear()
+            stepData?.answerOptions?.forEach { option ->
+                val isChecked = userAnswer?.answer_text?.contains(option) == true
+                answerOptionsState.add(option to isChecked)
+            }
         }
     }
 
     OnlineCursesTheme {
         AppBarStudent(title = "Ответ на шаг", showTopBar = true, showBottomBar = true, navController, userId) {
-            if (isLoading) {
-                Text("Загрузка...", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
-            } else if (errorMessage != null) {
-                Text("Ошибка: $errorMessage", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                        .pointerInput(Unit) {
-                            detectTapGestures(onTap = {
-                                focusManager.clearFocus()
-                            })
-                        },
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    OutlinedTextField(
-                        value = stepData?.questionText.orEmpty(),
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Текст вопроса") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
+            when {
+                isLoading -> {
+                    Text(
+                        "Загрузка...",
+                        modifier = Modifier.fillMaxSize(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge
                     )
+                }
+                errorMessage != null -> {
+                    Text(
+                        "Ошибка: $errorMessage",
+                        modifier = Modifier.fillMaxSize(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                else -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(onTap = { focusManager.clearFocus() })
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        // Текст вопроса
+                        OutlinedTextField(
+                            value = stepData?.questionText.orEmpty(),
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Текст вопроса") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                        )
 
-                    if (userAnswer?.estimation != null && userAnswer?.estimation != 0) {
-                        Text("Оценка: ${userAnswer!!.estimation}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(4.dp))
-                        Text("Комментарий: ${userAnswer!!.comment}", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(4.dp))
-                    } else {
-                        Column(Modifier.weight(1f)) {
-                            if (stepData?.answerOptions.isNullOrEmpty()) {
-                                OutlinedTextField(
-                                    value = textAnswer,
-                                    onValueChange = { textAnswer = it },
-                                    label = { Text("Ваш ответ") },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 16.dp)
-                                )
-                            } else {
-                                LazyColumn(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 16.dp)
-                                ) {
-                                    items(answerOptionsState) { (text, isChecked) ->
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.padding(vertical = 4.dp)
-                                        ) {
-                                            Checkbox(
-                                                checked = isChecked,
-                                                onCheckedChange = { checked ->
-                                                    val index = answerOptionsState.indexOfFirst { it.first == text }
-                                                    if (index != -1) {
-                                                        answerOptionsState[index] = text to checked
+                        // Если вопрос уже оценен
+                        if (userAnswer?.estimation != null && userAnswer?.estimation != 0) {
+                            Text(
+                                "Оценка: ${userAnswer!!.estimation}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(4.dp)
+                            )
+                            Text(
+                                "Комментарий: ${userAnswer!!.comment}",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        } else {
+                            Column(Modifier.weight(1f)) {
+                                // Поле ввода текста ответа (если нет вариантов ответа)
+                                if (stepData?.answerOptions.isNullOrEmpty()) {
+                                    OutlinedTextField(
+                                        value = textAnswer,
+                                        onValueChange = { textAnswer = it },
+                                        label = { Text("Ваш ответ") },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 16.dp)
+                                    )
+                                } else {
+                                    // Список вариантов ответа
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 16.dp)
+                                    ) {
+                                        items(stepData?.answerOptions.orEmpty()) { option ->
+                                            val isChecked = answerOptionsState.firstOrNull { it.first == option }?.second ?: false
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.padding(vertical = 4.dp)
+                                            ) {
+                                                Checkbox(
+                                                    checked = isChecked,
+                                                    onCheckedChange = { checked ->
+                                                        val index = answerOptionsState.indexOfFirst { it.first == option }
+                                                        if (index != -1) {
+                                                            answerOptionsState[index] = option to checked
+                                                        }
                                                     }
-                                                }
-                                            )
-                                            Text(
-                                                text = text,
-                                                modifier = Modifier.padding(start = 8.dp)
-                                            )
+                                                )
+                                                Text(
+                                                    text = option,
+                                                    modifier = Modifier.padding(start = 8.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        Button(
-                            onClick = {
-                                val finalAnswerArray = if (stepData?.answerOptions.isNullOrEmpty()) {
-                                    listOf(textAnswer.trim())
-                                } else {
-                                    answerOptionsState.filter { it.second }.map { it.first }
-                                }
+                            // Кнопка сохранения ответа
+                            Button(
+                                onClick = {
+                                    val finalAnswerArray = if (stepData?.answerOptions.isNullOrEmpty()) {
+                                        listOf(textAnswer.trim())
+                                    } else {
+                                        answerOptionsState.filter { it.second }.map { it.first }
+                                    }
 
-                                val formattedAnswer = finalAnswerArray.joinToString(
-                                    prefix = "{",
-                                    postfix = "}",
-                                    separator = ","
-                                ) { "\"$it\"" }
+                                    val formattedAnswer = finalAnswerArray.joinToString(
+                                        prefix = "{",
+                                        postfix = "}",
+                                        separator = ","
+                                    ) { "\"$it\"" }
 
-                                viewModel.submitAnswer(
-                                    userId = userId.toInt(),
-                                    stepId = stepId.toInt(),
-                                    answerText = formattedAnswer,
-                                    fileUri = null,
-                                    context = context
-                                )
-                            },
-                            modifier = Modifier.padding(top = 10.dp),
-                            enabled = userAnswer?.estimation == null || userAnswer?.estimation == 0
-                        ) {
-                            Text("Сохранить")
+                                    viewModel.submitAnswer(
+                                        userId = userId.toInt(),
+                                        stepId = stepId.toInt(),
+                                        answerText = formattedAnswer,
+                                        fileUri = null,
+                                        context = context
+                                    )
+                                },
+                                modifier = Modifier.padding(top = 10.dp),
+                                enabled = userAnswer?.estimation == null || userAnswer?.estimation == 0
+                            ) {
+                                Text("Сохранить")
+                            }
                         }
                     }
                 }
@@ -170,3 +210,4 @@ fun Question(navController: NavHostController, userId: String, stepId: String) {
         }
     }
 }
+
