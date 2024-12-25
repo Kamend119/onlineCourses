@@ -1,181 +1,170 @@
 package com.example.onlinecourses.student.takingCourses
 
-import android.content.ContentResolver
-import android.content.Context
-import android.net.Uri
-import android.os.Environment.*
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.onlinecourses.AppBarCourseOwner
-import com.example.onlinecourses.courseOwner.editCourse.StepData
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.example.onlinecourses.AppBarStudent
+import com.example.onlinecourses.network.QuestionViewModel
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun StepViewPreview() {
-    val stepData = StepData(
-        question = "Введите вопрос?",
-        type = "file",
-        textAnswer = null,
-        options = mutableListOf("Вариант 1" to false, "Вариант 2" to true),
-        fileUri = null
-    )
-    StepView(stepData)
-}
-
-fun downloadFile(context: Context, fileUri: Uri) {
-    val contentResolver: ContentResolver = context.contentResolver
-    val inputStream: InputStream? = contentResolver.openInputStream(fileUri)
-
-    inputStream?.let { input ->
-        val file = File(context.getExternalFilesDir(DIRECTORY_DOWNLOADS), fileUri.lastPathSegment ?: "file.pdf")
-        val outputStream: OutputStream = FileOutputStream(file)
-
-        val buffer = ByteArray(1024)
-        var length: Int
-        while (input.read(buffer).also { length = it } > 0) {
-            outputStream.write(buffer, 0, length)
-        }
-
-        outputStream.flush()
-        input.close()
-        outputStream.close()
-    }
-}
-
-@Composable
-fun StepView(stepData: StepData) {
-    var questionText by remember { mutableStateOf(stepData.question) }
-    val mode = stepData.type
-    var textAnswer by remember { mutableStateOf(stepData.textAnswer ?: "") }
-    val answerOptions = remember { stepData.options ?: mutableListOf() }
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
-
+fun Question(navController: NavHostController, userId: String, stepId: String) {
+    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val viewModel: QuestionViewModel = viewModel()
 
-    // Для прикрепления файла
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        selectedFileUri = uri
+    val stepData by viewModel.stepData.collectAsState()
+    val userAnswer by viewModel.userAnswer.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
+    var textAnswer by remember { mutableStateOf(userAnswer?.answer_text?.joinToString(" ") ?: "") }
+    val answerOptionsState = remember { mutableStateListOf<Pair<String, Boolean>>() }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadStepData(stepId.toInt(), userId.toInt())
+    }
+
+    LaunchedEffect(userAnswer) {
+        if (stepData?.answerOptions.isNullOrEmpty()) {
+            textAnswer = userAnswer?.answer_text?.joinToString(" ") ?: ""
+        }
+        answerOptionsState.clear()
+        stepData?.answerOptions?.forEach { option ->
+            val isChecked = userAnswer?.answer_text?.contains(option) == true
+            answerOptionsState.add(option to isChecked)
+        }
     }
 
     OnlineCursesTheme {
-        AppBarCourseOwner(title = "Ответ на шаг", showTopBar = true, showBottomBar = true) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                OutlinedTextField(
-                    value = questionText,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Текст вопроса") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                )
-
+        AppBarStudent(title = "Ответ на шаг", showTopBar = true, showBottomBar = true, navController, userId) {
+            if (isLoading) {
+                Text("Загрузка...", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
+            } else if (errorMessage != null) {
+                Text("Ошибка: $errorMessage", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
+            } else {
                 Column(
-                    Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                focusManager.clearFocus()
+                            })
+                        },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
                 ) {
-                    when (mode) {
-                        "text" -> {
-                            OutlinedTextField(
-                                value = textAnswer,
-                                onValueChange = { textAnswer = it },
-                                label = { Text("Ваш ответ") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp)
-                            )
-                        }
+                    OutlinedTextField(
+                        value = stepData?.questionText.orEmpty(),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Текст вопроса") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                    )
 
-                        "options" -> {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp)
-                            ) {
-                                items(answerOptions) { (text, isChecked) ->
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(vertical = 4.dp)
-                                    ) {
-                                        Checkbox(
-                                            checked = isChecked,
-                                            onCheckedChange = { isChecked ->
-                                                val index =
-                                                    answerOptions.indexOfFirst { it.first == text }
-                                                if (index != -1) {
-                                                    answerOptions[index] = text to isChecked
+                    if (userAnswer?.estimation != null && userAnswer?.estimation != 0) {
+                        Text("Оценка: ${userAnswer!!.estimation}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(4.dp))
+                        Text("Комментарий: ${userAnswer!!.comment}", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(4.dp))
+                    } else {
+                        Column(Modifier.weight(1f)) {
+                            if (stepData?.answerOptions.isNullOrEmpty()) {
+                                OutlinedTextField(
+                                    value = textAnswer,
+                                    onValueChange = { textAnswer = it },
+                                    label = { Text("Ваш ответ") },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp)
+                                )
+                            } else {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp)
+                                ) {
+                                    items(answerOptionsState) { (text, isChecked) ->
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.padding(vertical = 4.dp)
+                                        ) {
+                                            Checkbox(
+                                                checked = isChecked,
+                                                onCheckedChange = { checked ->
+                                                    val index = answerOptionsState.indexOfFirst { it.first == text }
+                                                    if (index != -1) {
+                                                        answerOptionsState[index] = text to checked
+                                                    }
                                                 }
-                                            }
-                                        )
-                                        Text(
-                                            text = text,
-                                            modifier = Modifier.padding(start = 8.dp)
-                                        )
+                                            )
+                                            Text(
+                                                text = text,
+                                                modifier = Modifier.padding(start = 8.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
 
-                        "file" -> {
-                            selectedFileUri?.let {
-                                Text(
-                                    "Вы прикрепили файл: ${it.lastPathSegment ?: "Неизвестное имя файла"}",
-                                    style = MaterialTheme.typography.bodyMedium
+                        Button(
+                            onClick = {
+                                val finalAnswerArray = if (stepData?.answerOptions.isNullOrEmpty()) {
+                                    listOf(textAnswer.trim())
+                                } else {
+                                    answerOptionsState.filter { it.second }.map { it.first }
+                                }
+
+                                val formattedAnswer = finalAnswerArray.joinToString(
+                                    prefix = "{",
+                                    postfix = "}",
+                                    separator = ","
+                                ) { "\"$it\"" }
+
+                                viewModel.submitAnswer(
+                                    userId = userId.toInt(),
+                                    stepId = stepId.toInt(),
+                                    answerText = formattedAnswer,
+                                    fileUri = null,
+                                    context = context
                                 )
-                            } ?: Text(
-                                "Файл не прикреплен",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Button(
-                                onClick = { filePickerLauncher.launch("*/*") },
-                                modifier = Modifier.padding(top = 10.dp)
-                            ) {
-                                Text("Прикрепить файл")
-                            }
-                        }
-
-                        else -> {
-                            Text("Неизвестный тип шага", style = MaterialTheme.typography.bodyMedium)
+                            },
+                            modifier = Modifier.padding(top = 10.dp),
+                            enabled = userAnswer?.estimation == null || userAnswer?.estimation == 0
+                        ) {
+                            Text("Сохранить")
                         }
                     }
-                }
-
-                Button(
-                    onClick = {
-                        // Логика сохранения ответа
-                        println("Ответ на вопрос: $textAnswer")
-                        selectedFileUri?.let {
-                            println("Файл прикреплен: ${it.lastPathSegment}")
-                        }
-                    },
-                    modifier = Modifier.padding(top = 10.dp)
-                ) {
-                    Text("Сохранить")
                 }
             }
         }

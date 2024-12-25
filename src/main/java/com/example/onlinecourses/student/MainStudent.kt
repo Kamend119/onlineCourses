@@ -34,7 +34,7 @@ import com.example.onlinecourses.network.MainStudentViewModel
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
 
 @Composable
-fun MainStudent(navController: NavHostController, userId: String) {
+fun MainStudent(navController: NavHostController, userId: String, role: String) {
     val studentViewModel: MainStudentViewModel = viewModel()
     val state by studentViewModel.dailyStatsState.collectAsState()
 

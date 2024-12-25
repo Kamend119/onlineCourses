@@ -23,9 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.onlinecourses.functions.ThemePreferences
+import com.example.onlinecourses.functions.UserPreferences
+import com.example.onlinecourses.functions.rememberDarkModeState
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
-import com.example.onlinecourses.ui.theme.ThemePreferences
-import com.example.onlinecourses.ui.theme.rememberDarkModeState
 
 @Composable
 fun Settings(navController: NavHostController, userId: String, role: String) {
@@ -44,7 +45,7 @@ fun Settings(navController: NavHostController, userId: String, role: String) {
         ) {
             IconButton(
                 onClick = {
-                    navController.navigate("mainStudent/${userId}")
+                    navController.navigate("mainStudent/${userId}/${role}")
                 },
                 modifier = Modifier.align(Alignment.End)
             ) {
@@ -148,7 +149,8 @@ fun Settings(navController: NavHostController, userId: String, role: String) {
                 )
                 Button(
                     onClick = {
-                        // Логика выхода из аккаунта (например, очистка данных и возврат на экран входа)
+                        val userPreferences = UserPreferences(context)
+                        userPreferences.deleteUser()
                         navController.navigate("entrance")
                     },
                     Modifier.align(Alignment.CenterHorizontally)

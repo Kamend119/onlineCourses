@@ -73,7 +73,7 @@ fun EditAccount(navController: NavHostController, userId: String) {
                         focusManager.clearFocus()
                     })
                 },
-            contentAlignment = Alignment.Center // Центрирование контента
+            contentAlignment = Alignment.Center
         ) {
 
             Column(
@@ -136,13 +136,13 @@ fun EditAccount(navController: NavHostController, userId: String) {
                 )
 
                 OutlinedTextField(
-                    value = dateBirthday,
+                    value = userDataState.date_birth ?: "",
                     onValueChange = {},
                     label = {
                         Text(
                             text = "Дата рождения",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                            color = MaterialTheme.colorScheme.onBackground
                         ) },
                     readOnly = true,
                     trailingIcon = {

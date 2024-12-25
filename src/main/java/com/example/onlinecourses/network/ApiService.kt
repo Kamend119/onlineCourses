@@ -151,6 +151,7 @@ interface ApiService {
     @GET("get_answers_by_step")
     suspend fun getAnswersByStep(@Query("step_id") stepId: Int): Response<List<AnswerStep>>
 
+    // поставить оценку
     @POST("set_estimation")
     suspend fun setEstimation(
         @Query("answer_id") answerId: Int,
@@ -186,4 +187,10 @@ interface ApiService {
 
     @POST("delete_course_by_id")
     suspend fun deleteCourseById(@Query("course_id") courseId: Int): Response<MessageResponse>
+
+    @POST ("get_categories")
+    suspend fun getCategories(): Response<List<Categories>>
+
+    @GET("get_answers_by_step_for_user")
+    suspend fun getAnswersByStepForUser(@Query("step_id") stepId: Int, @Query("user_id") userId: Int): Response<GetAnswersUser>
 }

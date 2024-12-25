@@ -24,9 +24,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.onlinecourses.functions.UserPreferences
+import com.example.onlinecourses.functions.rememberDarkModeStateSystem
 import com.example.onlinecourses.network.AuthorizationViewModel
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
-import com.example.onlinecourses.ui.theme.rememberDarkModeStateSystem
 
 @Composable
 fun Authorization(navController: NavHostController) {
@@ -35,10 +36,8 @@ fun Authorization(navController: NavHostController) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
-
     val isLoading = viewModel.isLoading
     val context = LocalContext.current
-
     val isDarkMode = rememberDarkModeStateSystem()
 
     OnlineCursesTheme(darkTheme = isDarkMode) {
@@ -71,7 +70,7 @@ fun Authorization(navController: NavHostController) {
                     Text(
                         text = "Загрузка...",
                         modifier = Modifier.padding(top = 16.dp),
-                        color = MaterialTheme.colorScheme.onBackground // Цвет текста загрузки
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 } else {
                     OutlinedTextField(
@@ -81,12 +80,12 @@ fun Authorization(navController: NavHostController) {
                             Text(
                                 text = "Логин",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         },
                         modifier = Modifier
                             .padding(top = 16.dp)
-                            .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                            .background(MaterialTheme.colorScheme.surface)
                     )
 
                     OutlinedTextField(
@@ -96,50 +95,40 @@ fun Authorization(navController: NavHostController) {
                             Text(
                                 text = "Пароль",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground // Цвет текста метки
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         },
                         modifier = Modifier
                             .padding(top = 16.dp)
-                            .background(MaterialTheme.colorScheme.surface) // Цвет поверхности
+                            .background(MaterialTheme.colorScheme.surface)
                     )
 
                     Button(
                         onClick = {
-                            if (login.isBlank()) {
-                                Toast.makeText(context, "Логин не может быть пустым", Toast.LENGTH_SHORT).show()
+                            if (login.isBlank() || password.isBlank()) {
+                                Toast.makeText(context, "Заполните все поля", Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
-                            if (password.isBlank()) {
-                                Toast.makeText(context, "Пароль не может быть пустым", Toast.LENGTH_SHORT).show()
-                                return@Button
-                            } else {
-                                viewModel.login(login, password) { userId, roleName ->
-                                    if (roleName == "Админ") {
-                                        navController.navigate("mainAdministrator/${userId}")
-                                        Toast.makeText(context, "Добро пожаловать, Админ!", Toast.LENGTH_SHORT).show()
-                                    } else if (roleName == "Владелец") {
-                                        navController.navigate("mainOwner/${userId}")
-                                        Toast.makeText(context, "Добро пожаловать, Владелец!", Toast.LENGTH_SHORT).show()
-                                    } else if (roleName == "Студент") {
-                                        navController.navigate("mainStudent/${userId}")
-                                        Toast.makeText(context, "Добро пожаловать, Студент!", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(context, "Роль не распознана", Toast.LENGTH_SHORT).show()
-                                    }
+
+                            viewModel.login(login, password) { userId, roleName ->
+                                val userPreferences = UserPreferences(context)
+                                userPreferences.setUser(userId, roleName)
+                                println("$userId ----------------------- $roleName")
+                                when (roleName) {
+                                    "Студент" -> navController.navigate("mainStudent/$userId/$roleName")
+                                    else -> Toast.makeText(context, "Роль не распознана", Toast.LENGTH_SHORT).show()
                                 }
+
+                                Toast.makeText(context, "Добро пожаловать, $roleName!", Toast.LENGTH_SHORT).show()
                             }
                         },
                         modifier = Modifier.padding(top = 20.dp)
                     ) {
-                        Text(
-                            text = "Войти",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimary // Цвет текста на кнопке
-                        )
+                        Text(text = "Войти")
                     }
                 }
             }
         }
     }
 }
+

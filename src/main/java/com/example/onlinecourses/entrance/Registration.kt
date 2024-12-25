@@ -44,7 +44,7 @@ import com.example.onlinecourses.functions.isValidAge
 import com.example.onlinecourses.network.RegistrationViewModel
 import com.example.onlinecourses.network.User
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
-import com.example.onlinecourses.ui.theme.rememberDarkModeStateSystem
+import com.example.onlinecourses.functions.rememberDarkModeStateSystem
 import java.text.SimpleDateFormat
 import java.util.Locale
 

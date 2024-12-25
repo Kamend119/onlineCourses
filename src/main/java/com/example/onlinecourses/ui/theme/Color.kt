@@ -8,7 +8,7 @@ val DarkBackgroundColor = Color(0xFF0B2545)    // Тёмно-синий фон
 val DarkSurfaceColor = Color(0xFF133F74)       // Немного светлее фона
 val DarkTextColor = Color(0xFFFFFFFF)          // Белый текст на тёмном фоне
 
-val LightPrimaryColor = Color(0xFF4F6D7A)      // Более насыщенный синий
+val LightPrimaryColor = Color(0xFF4BA3C7)      // Более насыщенный синий
 val LightSecondaryColor = Color(0xFFC0D6DF)    // Светлый голубой акцент
 val LightBackgroundColor = Color(0xFFDBE9EE)   // Почти белый фон
 val LightSurfaceColor = Color(0xFFE5F1F7)      // Чуть светлее фона

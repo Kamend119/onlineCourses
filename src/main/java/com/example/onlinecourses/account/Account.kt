@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -108,51 +107,6 @@ fun Account(navController: NavHostController, userId: String, role: String) {
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
-                    }
-
-                    if (role == "Студент") {
-                        Button(
-                            onClick = {
-                                navController.navigate("deferredCourses/${userId}")
-                            },
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                "Отложенные курсы",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                navController.navigate("completedCourses/${userId}")
-                            },
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                "Пройденные курсы",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                navController.navigate("mainCertificate/${userId}")
-                            },
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                "Мои сертификаты",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
                     }
                 }
             }

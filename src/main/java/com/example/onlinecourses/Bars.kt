@@ -35,6 +35,8 @@ fun AppBarStudent(
     userId: String,
     content: @Composable () -> Unit
 ) {
+    val role = "Студент"
+
     OnlineCursesTheme {
         Scaffold(
             topBar = {
@@ -105,7 +107,7 @@ fun AppBarStudent(
                                         modifier = Modifier.size(30.dp)
                                     )
                                 }
-                                IconButton(onClick = { navController.navigate("mainStudent/${userId}") }) {
+                                IconButton(onClick = { navController.navigate("mainStudent/${userId}/${role}") }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.home),
                                         contentDescription = "Главная",

@@ -1,4 +1,4 @@
-package com.example.onlinecourses.ui.theme
+package com.example.onlinecourses.functions
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -12,21 +12,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.launch
 
-val Context.dataStore by preferencesDataStore(name = "settings")
+val Context.dataStoreSettings by preferencesDataStore(name = "settings")
 
 class ThemePreferences(context: Context) {
-
     private val preferences: SharedPreferences = context.getSharedPreferences("theme_preferences", Context.MODE_PRIVATE)
-
-    // Ключ для сохранения состояния темы
     private val DARK_MODE_KEY = "dark_mode_key"
-
-    // Считываем состояние темы
     fun getDarkModeState(): Boolean {
-        return preferences.getBoolean(DARK_MODE_KEY, false) // По умолчанию светлая тема
+        return preferences.getBoolean(DARK_MODE_KEY, false)
     }
-
-    // Сохраняем состояние темы
     fun setDarkModeState(isDarkMode: Boolean) {
         preferences.edit().putBoolean(DARK_MODE_KEY, isDarkMode).apply()
     }
@@ -39,27 +32,47 @@ fun rememberDarkModeState(): Pair<Boolean, (Boolean) -> Unit> {
     val isSystemDarkMode = isSystemInDarkTheme()
     val (isDarkMode, setIsDarkMode) = remember { mutableStateOf(isSystemDarkMode) }
     val coroutineScope = rememberCoroutineScope()
-
-    // Загрузить сохраненное состояние темной темы при старте
     LaunchedEffect(Unit) {
         val darkModeState = themePreferences.getDarkModeState()
         setIsDarkMode(darkModeState)
     }
-
-    // Функция для обновления состояния темы
     val setDarkMode: (Boolean) -> Unit = { value: Boolean ->
         setIsDarkMode(value)
         coroutineScope.launch {
             themePreferences.setDarkModeState(value)
         }
     }
-
     return isDarkMode to setDarkMode
 }
-
 
 @Composable
 fun rememberDarkModeStateSystem(): Boolean {
     val isDarkMode = isSystemInDarkTheme()
     return remember { mutableStateOf(isDarkMode) }.value
+}
+
+
+data class User(
+    val userId: String,
+    val role: String
+)
+
+class UserPreferences(context: Context) {
+    private val preferences: SharedPreferences = context.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
+    private val USERID_KEY = "userId"
+    private val ROLE_KEY = "role"
+
+    fun getUser(): User {
+        val userId = preferences.getString(USERID_KEY, "-1")?: "-1"
+        val role = preferences.getString(ROLE_KEY, "Не распознано")?: "Не распознано"
+        return User(userId, role)
+    }
+    fun setUser(userId: String, role: String) {
+        preferences.edit().putString(USERID_KEY, userId).apply()
+        preferences.edit().putString(ROLE_KEY, role).apply()
+    }
+    fun deleteUser() {
+        preferences.edit().remove(USERID_KEY).apply()
+        preferences.edit().remove(ROLE_KEY).apply()
+    }
 }

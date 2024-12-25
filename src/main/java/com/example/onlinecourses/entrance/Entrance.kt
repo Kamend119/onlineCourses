@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlinecourses.ui.theme.OnlineCursesTheme
-import com.example.onlinecourses.ui.theme.rememberDarkModeStateSystem
+import com.example.onlinecourses.functions.rememberDarkModeStateSystem
 
 @Composable
 fun Entrance(navController: NavHostController) {

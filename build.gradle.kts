@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 

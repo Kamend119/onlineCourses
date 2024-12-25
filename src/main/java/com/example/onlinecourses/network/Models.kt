@@ -35,9 +35,11 @@ data class CreateAdminResponses(
 )
 
 data class GetUserRequest(
-    @SerializedName("subject_id") val subjectId: Int,
-    val message: String,
-    val status: String
+    @SerializedName("request_id") val request_id: Int,
+    @SerializedName("subject_name") val subject_name: String,
+    @SerializedName("message") val message: String,
+    @SerializedName("status") val status: String,
+    @SerializedName("admin_answer") val admin_answer: String
 )
 
 data class GetAllRequest(
@@ -51,7 +53,8 @@ data class GetAllRequest(
 data class GetUser(
     val email: String,
     @SerializedName("first_name") val firstName: String,
-    @SerializedName("last_name") val lastName: String
+    @SerializedName("last_name") val lastName: String,
+    @SerializedName("date_birth") val date_birth: String
 )
 
 data class CourseAllOtl(
@@ -184,4 +187,17 @@ data class AnswerResponse(
 
 data class StepIdResponse(
     @SerializedName("step_id") val stepId: Int
+)
+
+data class Categories(
+    @SerializedName("id_") val id_: Int,
+    @SerializedName("name") val name: String
+)
+
+data class GetAnswersUser(
+    @SerializedName("answer_id") val answer_id: Int,
+    @SerializedName("user_id") val user_id: Int,
+    @SerializedName("answer_text") val answer_text: List<String>?,
+    @SerializedName("estimation") val estimation: Int,
+    @SerializedName("comment") val comment: String
 )
