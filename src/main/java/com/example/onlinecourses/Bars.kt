@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -59,7 +60,7 @@ fun AppBarStudent(
                                     modifier = Modifier.padding(10.dp)
                                 )
                                 Row {
-                                    IconButton(onClick = { navController.navigate("account/${userId}/Студент")  }) {
+                                    IconButton(onClick = { navController.navigate("account/${userId}/Студент") }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.user),
                                             contentDescription = "Акаунт",
@@ -84,8 +85,9 @@ fun AppBarStudent(
                 if (showBottomBar) {
                     Box(
                         modifier = Modifier
-                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
                             .fillMaxWidth()
+                            .navigationBarsPadding()
+                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
                     ) {
                         androidx.compose.material3.Surface(
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
