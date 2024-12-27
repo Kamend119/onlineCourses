@@ -38,6 +38,8 @@ fun AppBarStudent(
 ) {
     val role = "Студент"
 
+    // коммент
+
     OnlineCursesTheme {
         Scaffold(
             topBar = {
